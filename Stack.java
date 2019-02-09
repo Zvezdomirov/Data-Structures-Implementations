@@ -56,7 +56,7 @@ public class Stack<T> {
         return top < 0;
     }
 
-    public boolean isFull() {
+    private boolean isFull() {
         return top == stack.length - 1;
     }
 }
