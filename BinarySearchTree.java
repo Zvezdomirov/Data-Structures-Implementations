@@ -1,5 +1,9 @@
 package BinarySearchTree;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class BinarySearchTree<T extends Comparable<T>> {
     private TreeNode<T> root;
 
@@ -67,25 +71,61 @@ public class BinarySearchTree<T extends Comparable<T>> {
                 }
             }
         }
+    }
 
+    private TreeNode<T> deleteRec(TreeNode<T> root, T element) {
+        if (root == null) {
+            return null;
+        }
+
+            /*Traverse the tree recursively to find the node,
+            * containing the element for deletion*/
+        if (root.data.compareTo(element) < 0) {
+            root.rightChild = deleteRec(root.rightChild, element);
+        } else if (root.data.compareTo(element) > 0) {
+            root.leftChild = deleteRec(root.leftChild, element);
+        } else {
+
+            /*We have now found the node we were looking for
+            * and now we have to delete it, considering
+            * the following cases:
+            *
+            * 1) The node has one child or no child*/
+            if (root.leftChild == null) {
+                return root.rightChild;
+            } else if (root.rightChild == null) {
+                return root.leftChild;
+            }
+
+            /*2) The node has two children*/
+            root.data = getTreeMin(root.rightChild);
+            root.rightChild = deleteRec(root.rightChild, root.data);
+        }
+        return root;
+    }
+
+    public T getTreeMin(TreeNode<T> root) {
+        if (root.leftChild == null) {
+            return root.data;
+        } else {
+            return getTreeMin(root.leftChild);
+        }
     }
 
     //TODO: Implement delete method
-    public void delete() {
-
+    public void deleteKey(T element) {
+        root = deleteRec(root, element);
     }
 
+    public void printPostOrder(TreeNode<T> root, BufferedWriter bufferedWriter,
+                               String sep) throws IOException {
+        if (root == null) {
+            return;
+        }
+        printPostOrder(root.leftChild, bufferedWriter, sep);
+        printPostOrder(root.rightChild, bufferedWriter, sep);
 
-    public static void main(String[] args) {
-        BinarySearchTree<Integer> myTree = new BinarySearchTree<>(90);
-        myTree.add(50);
-        myTree.add(150);
-        myTree.add(75);
-        myTree.add(20);
-        myTree.add(95);
-        myTree.add(175);
-        System.out.println(myTree.contains(75));
-        System.out.println(myTree.contains(175));
-        System.out.println(myTree.contains(8));
+        bufferedWriter.write(root.data.toString());
+        bufferedWriter.write(sep);
     }
 }
