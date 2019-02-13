@@ -1,18 +1,19 @@
-package HashMap.tests;
+
 
 import HashMap.MyHashMap;
 import org.junit.jupiter.api.*;
+import org.mockito.*;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MyHashMapTest {
-    private MyHashMap<String, String> map =
-            new MyHashMap<>(17);
+    private MyHashMap<String, String> map;
 
     @BeforeEach
     public void initMap() {
+        map  = new MyHashMap<>(17);
         map.put("USA", "Washington DC");
         map.put("Nepal", "Kathmandu");
         map.put("India", "New Delhi");
@@ -87,4 +88,18 @@ public class MyHashMapTest {
         assertTrue(firstKey.equals(secondKey));
         assertTrue(map.getHash(firstKey) == map.getHash(secondKey));
     }
+
+    /*TODO: Try to fix it, because it spits this out:
+    java.lang.IllegalStateException:
+     Could not initialize plugin: interface org.mockito.plugins.MockMaker (alternate: null)
+    @SuppressWarnings("unchecked")
+    @Test
+    public void mapRehashesAfterLoadFactorLimitIsExceeded() {
+        MyHashMap<String, String> mockMap = (MyHashMap<String, String>) Mockito.mock(MyHashMap.class);
+        int currentCapacity = mockMap.getCapacity();
+
+        Mockito.when(mockMap.getCurrentLoadFactor()).thenReturn(mockMap.getMaxLoadFactor() + 0.1);
+        mockMap.put("Spain", "Madrid");
+        assertEquals(currentCapacity * 2, mockMap.getCapacity());
+    }*/
 }

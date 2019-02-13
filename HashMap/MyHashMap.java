@@ -1,14 +1,14 @@
 package HashMap;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class MyHashMap<K, V> {
-    private MyEntry<K, V>[] buckets;
-    private int size;
     private static final int INITIAL_CAPACITY = 16;
+    private static final double MAX_LOAD_FACTOR = 0.75;
+    private MyEntry<K, V>[] buckets;
+    private int capacity;
+    private int size;
 
     public MyHashMap() {
         this(INITIAL_CAPACITY);
@@ -16,6 +16,7 @@ public class MyHashMap<K, V> {
 
     @SuppressWarnings("unchecked")
     public MyHashMap(int capacity) {
+        this.capacity = capacity;
         buckets = new MyEntry[capacity];
     }
 
@@ -66,7 +67,6 @@ public class MyHashMap<K, V> {
             buckets[bucket] = newEntry;
             size++;
         } else {
-
             while (currentEntry.next != null) {
                 if (currentEntry.key.equals(key)) {
                     currentEntry.value = value;
@@ -75,7 +75,6 @@ public class MyHashMap<K, V> {
                     currentEntry = currentEntry.next;
                 }
             }
-
             if (currentEntry.key.equals(key)) {
                 currentEntry.value = value;
             } else {
@@ -83,7 +82,33 @@ public class MyHashMap<K, V> {
                 size++;
             }
         }
+        if (getCurrentLoadFactor() > MAX_LOAD_FACTOR) {
+            rehash(this.buckets);
+        }
         return currentEntry;
+    }
+
+    public double getCurrentLoadFactor() {
+        return ((double) size) / buckets.length;
+    }
+
+    public double getMaxLoadFactor() {
+        return MAX_LOAD_FACTOR;
+    }
+
+    public int getCapacity() {
+        return this.capacity;
+    }
+    @SuppressWarnings("unchecked")
+    private void rehash(MyEntry<K, V>[] buckets) {
+        MyEntry<K, V>[] newBuckets = new MyEntry[buckets.length * 2];
+        for (int i = 0; i < buckets.length; i++) {
+            while(buckets[i] != null) {
+                newBuckets[i] = buckets[i];
+                buckets[i] = buckets[i].next;
+            }
+        }
+        buckets = newBuckets;
     }
 
     public K remove(K key) {
