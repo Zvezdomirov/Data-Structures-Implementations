@@ -1,2 +1,1 @@
-# Data-Structures-Implementations
-These are my custom implementations for popular data structures. (The implementations are with Generic type)
+Some popular data structures implementations I made while learning them.
